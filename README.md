@@ -1,4 +1,11 @@
-# kickstart.nvim
+# NeoVim Config bootstrapped from kickstart NeoVim
+
+## Notes to self
+
+- If you add components such as linters, formatters, etc., make them available in NeoVim via Mason.
+- Formatting done using Conform
+- Linting via nvim-lint
+- Copilot requires node.js
 
 ## Introduction
 
