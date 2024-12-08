@@ -100,6 +100,7 @@ vim.opt.scrolloff = 10
 
 -- [[ Basic Keymaps ]]
 --  See `:help vim.keymap.set()`
+-- TODO make a separate file with mappings
 
 -- Use jj to escape insert mode
 vim.keymap.set('i', 'jj', '<Esc>')
@@ -107,6 +108,13 @@ vim.keymap.set('i', 'jj', '<Esc>')
 -- Set highlight on search, but clear on pressing <Esc> in normal mode
 vim.opt.hlsearch = true
 vim.keymap.set('n', '<Esc>', '<cmd>nohlsearch<CR>')
+
+-- Define more break points for better undo behavior
+-- Do not undo whole line, but undo per section.
+vim.keymap('i', ',', ',<c-g>u')
+vim.keymap('i', '.', '.<c-g>u')
+vim.keymap('i', '!', '!<c-g>u')
+vim.keymap('i', '?', '?<c-g>u')
 
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
