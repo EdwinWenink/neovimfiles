@@ -175,6 +175,10 @@ require('lazy').setup({
   'tpope/vim-sleuth', -- Detect tabstop and shiftwidth automatically
   'tpope/vim-fugitive', -- Git integration
   'tpope/vim-vinegar', -- Beter netrw experience
+  'tpope/vim-surround', -- Surround text objects (yss, cs;", ds")
+  'tpope/vim-repeat', -- Repeat surround actions with `.`
+  'tpope/vim-commentary', -- Comment lines with `gcc` (current line with count) or `gc` (with motion)
+  'romainl/vim-cool', -- Cooler highlighting for search
 
   {
     'lervag/vimtex',
