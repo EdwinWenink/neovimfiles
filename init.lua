@@ -119,6 +119,12 @@ vim.keymap.set('i', '?', '?<c-g>u')
 -- Change directory to directory of current file
 vim.keymap.set('n', '<leader>cd', '<cmd>cd %:p:h<CR>', { desc = 'Change directory to current file' })
 
+-- Accept spelling suggestions on the fly
+-- TODO doesn't work yet? Doubly mapped?
+vim.keymap.set('i', '<C-l>', '<c-g>u<Esc>[s1z=`]a<c-g>u', { desc = 'Accept spelling suggestions on the fly' })
+
+-- # TODO map j to gj and k to gk
+
 -- Diagnostic keymaps
 vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, { desc = 'Go to previous [D]iagnostic message' })
 vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next [D]iagnostic message' })
@@ -328,6 +334,28 @@ require('lazy').setup({
 
       -- [[ Configure Telescope ]]
       -- See `:help telescope` and `:help telescope.setup()`
+      local transform_mod = require('telescope.actions.mt').transform_mod
+      local custom_actions = {}
+
+      custom_actions.create_markdown_link = function(prompt_bufnr)
+        local action_state = require 'telescope.actions.state'
+        local entry = action_state.get_selected_entry()
+        local filepath = entry[1]
+        local filename = vim.fn.fnameescape(vim.fn.fnamemodify(filepath, ':t'))
+        require('telescope.actions').close(prompt_bufnr)
+        -- Insert Markdown link with current filename
+        vim.cmd('normal i ' .. string.format('[%s]( %s )', filename, filepath))
+      end
+
+      custom_actions.change_directory = function(prompt_bufnr)
+        local selection = require('telescope.actions.state').get_selected_entry()
+        local dir = vim.fn.fnamemodify(selection.path, ':p:h')
+        require('telescope.actions').close(prompt_bufnr)
+        vim.cmd(string.format('silent lcd %s', dir))
+      end
+
+      custom_actions = transform_mod(custom_actions)
+
       require('telescope').setup {
         -- You can put your default mappings / updates / etc. in here
         --  All the info you're looking for is in `:help telescope.setup()`
@@ -338,6 +366,21 @@ require('lazy').setup({
         --   },
         -- },
         -- pickers = {}
+        defaults = {
+          mappings = {},
+        },
+        pickers = {
+          find_files = {
+            mappings = {
+              i = {
+                ['<c-z>'] = custom_actions.create_markdown_link,
+              },
+              n = {
+                ['cd'] = custom_actions.change_directory,
+              },
+            },
+          },
+        },
         extensions = {
           ['ui-select'] = {
             require('telescope.themes').get_dropdown(),
