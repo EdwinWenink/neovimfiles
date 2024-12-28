@@ -344,7 +344,8 @@ require('lazy').setup({
         local filename = vim.fn.fnameescape(vim.fn.fnamemodify(filepath, ':t'))
         require('telescope.actions').close(prompt_bufnr)
         -- Insert Markdown link with current filename
-        vim.cmd('normal i ' .. string.format('[%s]( %s )', filename, filepath))
+        -- This assumes that my notes are in a flat directory
+        vim.cmd('normal i ' .. string.format('[%s]( %s )', filename, filename))
       end
 
       custom_actions.change_directory = function(prompt_bufnr)
