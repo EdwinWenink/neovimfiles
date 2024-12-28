@@ -342,10 +342,14 @@ require('lazy').setup({
         local entry = action_state.get_selected_entry()
         local filepath = entry[1]
         local filename = vim.fn.fnameescape(vim.fn.fnamemodify(filepath, ':t'))
+        -- Note, the following is Vimscript regex but with Lua style backslash escaping
+        -- Original regex: ':t:s/\(^\d\+-\)\?\(.*\)\..\{1,3\}/\2/'))
+        local filename_wo_timestamp = vim.fn.fnamemodify(filename, ':s/\\(^\\d\\+-\\)\\?\\(.*\\)\\..\\{1,3\\}/\\2/')
+        filename_wo_timestamp = filename_wo_timestamp:gsub('_', ' ')
         require('telescope.actions').close(prompt_bufnr)
         -- Insert Markdown link with current filename
         -- This assumes that my notes are in a flat directory
-        vim.cmd('normal i ' .. string.format('[%s]( %s )', filename, filename))
+        vim.cmd('normal i ' .. string.format('[%s]( %s )', filename_wo_timestamp, filename))
       end
 
       custom_actions.change_directory = function(prompt_bufnr)
@@ -611,7 +615,10 @@ require('lazy').setup({
                 callSnippet = 'Replace',
               },
               -- You can toggle below to ignore Lua_LS's noisy `missing-fields` warnings
-              -- diagnostics = { disable = { 'missing-fields' } },
+              diagnostics = {
+                globals = { 'vim' },
+                disable = { 'missing-fields' },
+              },
             },
           },
         },
