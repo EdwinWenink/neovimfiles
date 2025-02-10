@@ -622,6 +622,13 @@ require('lazy').setup({
             },
           },
         },
+
+        eslint = {
+          settings = {
+            -- Helps eslint find .eslintrc when it's placed in a subdirectory instead of the cwd root
+            workingDirectories = { mode = 'auto' },
+          },
+        },
       }
 
       -- Ensure the servers and tools above are installed
