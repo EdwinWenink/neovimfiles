@@ -12,7 +12,8 @@ return {
   -- NOTE: And you can specify dependencies as well
   dependencies = {
     -- Creates a beautiful debugger UI
-    'rcarriga/nvim-dap-ui',
+    -- NOTE Dap ui is currently broken, temporary downgrade
+    { 'rcarriga/nvim-dap-ui', commit = 'da58752' },
     'theHamsta/nvim-dap-virtual-text',
 
     -- Required dependency for nvim-dap-ui
@@ -27,7 +28,6 @@ return {
   },
   config = function()
     local dap = require 'dap'
-    local dapui = require 'dapui'
 
     require('mason-nvim-dap').setup {
       -- Makes a best effort to setup the various debuggers with
@@ -55,6 +55,8 @@ return {
     vim.keymap.set('n', '<leader>B', function()
       dap.set_breakpoint(vim.fn.input 'Breakpoint condition: ')
     end, { desc = 'Debug: Set Breakpoint' })
+
+    local dapui = require 'dapui'
 
     -- Dap UI setup
     -- For more information, see |:help nvim-dap-ui|
@@ -86,6 +88,6 @@ return {
     dap.listeners.before.event_exited['dapui_config'] = dapui.close
 
     require('dap-python').setup 'python'
-    require('nvim-dap-virtual-text').setup()
+    require('nvim-dap-virtual-text').setup { enabled = true }
   end,
 }
