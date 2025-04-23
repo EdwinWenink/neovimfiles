@@ -28,6 +28,7 @@ return {
   },
   config = function()
     local dap = require 'dap'
+    local dapui = require 'dapui'
 
     require('mason-nvim-dap').setup {
       -- Makes a best effort to setup the various debuggers with
@@ -43,6 +44,7 @@ return {
       ensure_installed = {
         -- Update this to ensure that you have the debuggers for the langs you want
         'python',
+        'debugpy',
       },
     }
 
@@ -55,8 +57,6 @@ return {
     vim.keymap.set('n', '<leader>B', function()
       dap.set_breakpoint(vim.fn.input 'Breakpoint condition: ')
     end, { desc = 'Debug: Set Breakpoint' })
-
-    local dapui = require 'dapui'
 
     -- Dap UI setup
     -- For more information, see |:help nvim-dap-ui|
@@ -88,6 +88,7 @@ return {
     dap.listeners.before.event_exited['dapui_config'] = dapui.close
 
     require('dap-python').setup 'python'
+    -- require('dap-python').setup 'uv'
     require('nvim-dap-virtual-text').setup { enabled = true }
   end,
 }
