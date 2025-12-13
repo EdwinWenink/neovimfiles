@@ -629,6 +629,8 @@ require('lazy').setup({
             workingDirectories = { mode = 'auto' },
           },
         },
+
+        ts_ls = {},
       }
 
       -- Ensure the servers and tools above are installed
