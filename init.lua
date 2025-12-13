@@ -649,6 +649,9 @@ require('lazy').setup({
         'isort',
         'prettierd',
         'prettier',
+        'jsonlint',
+        'tflint',
+        'hadolint',
       })
       require('mason-tool-installer').setup { ensure_installed = ensure_installed }
 
