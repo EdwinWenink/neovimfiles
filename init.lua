@@ -343,7 +343,7 @@ require('lazy').setup({
         local action_state = require 'telescope.actions.state'
         local entry = action_state.get_selected_entry()
         local filepath = entry[1]
-        local filename = vim.fn.fnameescape(vim.fn.fnamemodify(filepath, ':t'))
+        local filename = vim.fn.fnamemodify(filepath, ':t')
         -- Note, the following is Vimscript regex but with Lua style backslash escaping
         -- Original regex: ':t:s/\(^\d\+-\)\?\(.*\)\..\{1,3\}/\2/'))
         local filename_wo_timestamp = vim.fn.fnamemodify(filename, ':s/\\(^\\d\\+-\\)\\?\\(.*\\)\\..\\{1,3\\}/\\2/')
