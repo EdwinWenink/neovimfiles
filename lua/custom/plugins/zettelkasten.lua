@@ -1,26 +1,22 @@
--- Lua port of my original Vimscript
+-- Lua port of my original Vimscript: Zettelkasten helpers
 
--- Check and set NOTES_DIR from environment variable or default path
-local notes_dir = os.getenv 'NOTES_DIR' or '~/Documents/Notes/'
+-- NOTES_DIR from environment, or default; expand ~ and resolve symlinks once
+local notes_dir = vim.fn.resolve(vim.fn.expand(os.getenv 'NOTES_DIR' or '~/Documents/Notes'))
 
--- Function to escape file path (Prevent issues with spaces or special characters)
-local function fnameescape(path)
-  return vim.fn.fnameescape(vim.fn.resolve(path))
-end
+-- Unescaped path; escape only at the point of use in Ex commands
+vim.g.zettelkasten = notes_dir
 
--- Set the global zettelkasten path
-vim.g.zettelkasten = fnameescape(notes_dir)
+vim.api.nvim_create_user_command('NewZettel', function(opts)
+  local slug = opts.args:gsub('%s+', '-')
+  local filename = vim.fs.joinpath(notes_dir, os.date '%Y%m%d%H%M' .. '-' .. slug .. '.md')
+  vim.cmd.edit(vim.fn.fnameescape(filename))
+end, { nargs = 1, desc = 'Create new Zettel' })
 
-return {
-  -- Define the NewZettel command
-  vim.api.nvim_create_user_command('NewZettel', function(opts)
-    local filename = vim.g.zettelkasten .. os.date '%Y%m%d%H%M' .. '-' .. opts.args .. '.md'
-    vim.cmd('edit ' .. vim.fn.fnameescape(filename))
-  end, { nargs = 1 }),
+vim.keymap.set('n', '<leader>ni', function()
+  vim.cmd.cd(vim.fn.fnameescape(notes_dir))
+end, { desc = 'Change directory to Zettelkasten' })
 
-  -- Map <leader>ni to change directory to Zettelkasten in normal mode
-  vim.keymap.set('n', '<leader>ni', ':cd ' .. notes_dir .. '<CR>', { noremap = true, silent = false, desc = 'Change directory to Zettelkasten' }),
+vim.keymap.set('n', '<leader>nz', ':NewZettel ', { desc = 'Create new Zettel' })
 
-  -- Map <leader>nz to the NewZettel command in normal mode
-  vim.keymap.set('n', '<leader>nz', ':NewZettel ', { noremap = true, silent = false, desc = 'Create new Zettel' }),
-}
+-- Not a plugin spec; this file only sets up commands and keymaps
+return {}
